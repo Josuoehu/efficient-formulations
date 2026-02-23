@@ -1,6 +1,6 @@
 # efficient-formulations
 
-Reference README for the current CLI behavior of:
+This README documents the current command-line behavior for:
 - `pddl2smt`
 - `pddl2sat`
 - `pddlalltime`
@@ -9,9 +9,9 @@ Reference README for the current CLI behavior of:
 
 - Java (JDK 17+ recommended)
 - Python 3 (required when using `-j` modes that generate/read JSON)
-- Z3 (optional, for solving generated SMT files)
+- Z3 (optional, for solving generated SMT formulas)
 
-Java libraries used by this repository:
+Java dependencies used in this repository:
 - `lib/pddl4j-3.1.0.jar`
 - `lib/javax.json-1.1.4.jar`
 - `lib/javax.json-api-1.1.4.jar`
@@ -22,17 +22,15 @@ Java libraries used by this repository:
 javac -cp 'lib/*:src' -d out src/pddl2smt.java src/pddl2sat.java src/pddlalltime.java
 ```
 
-## 1) `pddl2smt`
+## 1) pddl2smt
 
-Generates SMT-LIB to `stdout`.
+Prints SMT-LIB to `stdout`.
 
-### Mandatory flags
+### Required options
 
 - `-o <domain.pddl>`
 - `-f <problem.pddl>`
-- `-t <steps>` where `<steps> >= 0`
-
-Base command:
+- `-t <steps>` with `<steps> >= 0`
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o <domain.pddl> -f <problem.pddl> -t <steps>
@@ -40,14 +38,12 @@ java -cp 'out:lib/*' pddl2smt -o <domain.pddl> -f <problem.pddl> -t <steps>
 
 ### JSON mode (`-j`)
 
-You can add:
-- `-j [json_file]` (optional file path, default `output.json`)
+Optional:
+- `-j [json_file]` (default: `output.json`)
 
-When `-j` is used, exactly one profile is required:
+When `-j` is present, exactly one mode must be selected:
 - `--mode-c` (equivalent to `--init --static-init --opfilter-dom-no-pv`)
 - `--mode-sc` (equivalent to `--init --static-init --inertia --inertia-eff-skip`)
-
-Valid commands:
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-c
@@ -56,28 +52,17 @@ java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mo
 
 Rules:
 - With `-j`, one and only one of `--mode-c` / `--mode-sc` is accepted.
-- Legacy JSON flags are rejected if `-j` is present.
-- If JSON flags are passed without `-j`, they are ignored with a warning.
+- Legacy JSON flags are rejected when `-j` is used.
+- JSON flags without `-j` are ignored with a warning.
 - If the JSON file does not exist, it is generated automatically.
 
-### Example (sock-and-shoes)
+## 2) pddl2sat
 
-```bash
-java -cp 'out:lib/*' pddl2smt \
-  -o benchmarks/sock-and-shoes/domain.pddl \
-  -f benchmarks/sock-and-shoes/problems/problem.pddl \
-  -t 4 > /tmp/sock_t4.smt2
-
-z3 /tmp/sock_t4.smt2
-```
-
-## 2) `pddl2sat`
-
-Generates CNF (DIMACS) to `stdout`.
+Prints CNF (DIMACS) to `stdout`.
 
 ### Planning mode
 
-Mandatory flags:
+Required options:
 - `-d <domain.pddl>`
 - `-p <problem.pddl>`
 - `-s <steps>`
@@ -86,18 +71,18 @@ Mandatory flags:
 java -cp 'out:lib/*' pddl2sat -d <domain.pddl> -p <problem.pddl> -s <steps>
 ```
 
-### JSON mode with SAT encoding
+### JSON planning mode
 
 ```bash
 java -cp 'out:lib/*' pddl2sat -d <domain> -p <problem> -s <steps> -j [json]
 ```
 
-Behavior and constraints:
-- `-j` implies internal `init + static` behavior.
+Behavior:
+- `-j` implicitly enables internal `init + static` behavior.
 - `--init` and `--static` are no longer accepted explicitly.
-- `--inertia` is valid only without `-j`.
+- `--inertia` is valid only when `-j` is not used.
 - If `[json]` is omitted, default is `output.json`.
-- If JSON does not exist, it is generated automatically.
+- If the JSON file does not exist, it is generated automatically.
 
 ### Plan reconstruction mode
 
@@ -111,11 +96,11 @@ java -cp 'out:lib/*' pddl2sat -f <formula.cnf> -m <model>
 java -cp 'out:lib/*' pddl2sat --help
 ```
 
-## 3) `pddlalltime`
+## 3) pddlalltime
 
-Quantified SMT variant. This tool is intentionally limited to `-q`.
+Quantified SMT variant. This executable is intentionally limited to `-q` mode.
 
-Mandatory flags:
+Required options:
 - `-o <domain.pddl>`
 - `-f <problem.pddl>`
 - `-q all|time`
@@ -125,11 +110,11 @@ java -cp 'out:lib/*' pddlalltime -o <domain.pddl> -f <problem.pddl> -q all
 java -cp 'out:lib/*' pddlalltime -o <domain.pddl> -f <problem.pddl> -q time
 ```
 
-Current policy:
+Policy:
 - Only quantified mode is supported in `pddlalltime`.
-- Non-`-q` invocations print usage.
+- Non-`-q` calls print usage.
 
-## End-to-end quick checks
+## Quick checks (sock-and-shoes)
 
 ```bash
 # pddl2smt

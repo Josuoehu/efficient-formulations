@@ -22,7 +22,7 @@ Java dependencies used in this repository:
 javac -cp 'lib/*:src' -d out src/pddl2smt.java src/pddl2sat.java src/pddlalltime.java
 ```
 
-## 1) pddl2smt
+## 1) SMT Encoding Without Quantifiers
 
 Prints SMT-LIB to `stdout`.
 
@@ -56,7 +56,7 @@ Rules:
 - JSON flags without `-j` are ignored with a warning.
 - If the JSON file does not exist, it is generated automatically.
 
-## 2) pddl2sat
+## 2) SAT Encoding
 
 Prints CNF (DIMACS) to `stdout`.
 
@@ -93,7 +93,7 @@ java -cp 'out:lib/*' pddl2sat -f <formula.cnf> -m <model>
 java -cp 'out:lib/*' pddl2sat --help
 ```
 
-## 3) pddlalltime
+## 3) SMT Encoding With Quantifiers
 
 Quantified SMT variant. This executable is intentionally limited to `-q` mode.
 

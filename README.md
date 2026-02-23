@@ -42,8 +42,8 @@ Optional:
 - `-j [json_file]` (default: `output.json`)
 
 When `-j` is present, exactly one mode must be selected:
-- `--mode-c` (equivalent to `--init --static-init --opfilter-dom-no-pv`)
-- `--mode-sc` (equivalent to `--init --static-init --inertia --inertia-eff-skip`)
+- `--mode-c`  SMT-FD-C
+- `--mode-sc`  SMT-FD-SC
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-c
@@ -78,9 +78,6 @@ java -cp 'out:lib/*' pddl2sat -d <domain> -p <problem> -s <steps> -j [json]
 ```
 
 Behavior:
-- `-j` implicitly enables internal `init + static` behavior.
-- `--init` and `--static` are no longer accepted explicitly.
-- `--inertia` is valid only when `-j` is not used.
 - If `[json]` is omitted, default is `output.json`.
 - If the JSON file does not exist, it is generated automatically.
 
@@ -120,8 +117,6 @@ Policy:
 # pddl2smt
 java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 3 > /tmp/sock_t3.smt2
 java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 4 > /tmp/sock_t4.smt2
-z3 /tmp/sock_t3.smt2
-z3 /tmp/sock_t4.smt2
 
 # pddl2sat
 java -cp 'out:lib/*' pddl2sat -d benchmarks/sock-and-shoes/domain.pddl -p benchmarks/sock-and-shoes/problems/problem.pddl -s 4 > /tmp/sock_t4.cnf
@@ -129,6 +124,4 @@ java -cp 'out:lib/*' pddl2sat -d benchmarks/sock-and-shoes/domain.pddl -p benchm
 # pddlalltime
 java -cp 'out:lib/*' pddlalltime -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -q all > /tmp/pddlalltime_q_all.smt2
 java -cp 'out:lib/*' pddlalltime -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -q time > /tmp/pddlalltime_q_time.smt2
-z3 /tmp/pddlalltime_q_all.smt2
-z3 /tmp/pddlalltime_q_time.smt2
 ```

@@ -1,4 +1,4 @@
-# efficient-formulations
+# Efficient-Formulations
 
 This README documents the current command-line behavior for:
 - `pddl2smt`

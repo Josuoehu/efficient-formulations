@@ -53,20 +53,9 @@ java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mo
 
 Notes:
 
-- If the JSON file does not exist, it is regenerated automatically.
+- If the JSON file from FD simplification does not exist, it is regenerated automatically.
 - Using `-j` without a mode (or with both modes) raises an error.
 - Legacy JSON flags in `pddl2smt` are no longer freely combinable.
-
-### Check satisfiability with Z3
-
-```bash
-z3 /tmp/sock_t4.smt2
-```
-
-For `sock-and-shoes`:
-
-- `-t 3` -> `unsat`
-- `-t 4` -> `sat`
 
 ## 2) pddl2sat
 
@@ -93,12 +82,6 @@ java -cp 'out:lib/*' pddl2sat \
 java -cp 'out:lib/*' pddl2sat -d <domain> -p <problem> -s <steps> -j [json]
 ```
 
-Current rules:
-
-- `-j` implicitly enables the behavior of `--init --static`.
-- `--init` and `--static` are **no longer accepted** as explicit CLI options.
-- `--inertia` is not allowed together with `-j`.
-
 ### Reconstruct a plan from CNF + SAT model
 
 ```bash
@@ -110,10 +93,7 @@ java -cp 'out:lib/*' pddl2sat -f <formula.cnf> -m <model>
 SMT with 3 and 4 steps:
 
 ```bash
-java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 3 > /tmp/sock_t3.smt2
 java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 4 > /tmp/sock_t4.smt2
-z3 /tmp/sock_t3.smt2
-z3 /tmp/sock_t4.smt2
 ```
 
 SAT (CNF):

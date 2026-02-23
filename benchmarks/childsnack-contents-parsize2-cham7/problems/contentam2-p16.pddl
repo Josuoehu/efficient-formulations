@@ -1,0 +1,461 @@
+(define (problem example-problem)
+(:domain htg-child-snack)
+(:objects 
+  child0 - CHILD
+  child1 - CHILD
+  child2 - CHILD
+  child3 - CHILD
+  child4 - CHILD
+  child5 - CHILD
+  child6 - CHILD
+  bread0 - BREAD-PORTION
+  bread1 - BREAD-PORTION
+  bread2 - BREAD-PORTION
+  bread3 - BREAD-PORTION
+  bread4 - BREAD-PORTION
+  bread5 - BREAD-PORTION
+  bread6 - BREAD-PORTION
+  content-0 - CONTENT-DESCRIPTION
+  content-1 - CONTENT-DESCRIPTION
+  content-0-0 - CONTENT-PORTION
+  content-0-1 - CONTENT-PORTION
+  content-0-2 - CONTENT-PORTION
+  content-0-3 - CONTENT-PORTION
+  content-0-4 - CONTENT-PORTION
+  content-0-5 - CONTENT-PORTION
+  content-0-6 - CONTENT-PORTION
+  content-0-7 - CONTENT-PORTION
+  content-0-8 - CONTENT-PORTION
+  content-0-9 - CONTENT-PORTION
+  content-0-10 - CONTENT-PORTION
+  content-0-11 - CONTENT-PORTION
+  content-0-12 - CONTENT-PORTION
+  content-0-13 - CONTENT-PORTION
+  content-0-14 - CONTENT-PORTION
+  content-0-15 - CONTENT-PORTION
+  content-0-16 - CONTENT-PORTION
+  content-0-17 - CONTENT-PORTION
+  content-0-18 - CONTENT-PORTION
+  content-0-19 - CONTENT-PORTION
+  content-0-20 - CONTENT-PORTION
+  content-0-21 - CONTENT-PORTION
+  content-0-22 - CONTENT-PORTION
+  content-0-23 - CONTENT-PORTION
+  content-0-24 - CONTENT-PORTION
+  content-0-25 - CONTENT-PORTION
+  content-0-26 - CONTENT-PORTION
+  content-0-27 - CONTENT-PORTION
+  content-0-28 - CONTENT-PORTION
+  content-0-29 - CONTENT-PORTION
+  content-0-30 - CONTENT-PORTION
+  content-0-31 - CONTENT-PORTION
+  content-0-32 - CONTENT-PORTION
+  content-0-33 - CONTENT-PORTION
+  content-0-34 - CONTENT-PORTION
+  content-0-35 - CONTENT-PORTION
+  content-0-36 - CONTENT-PORTION
+  content-0-37 - CONTENT-PORTION
+  content-0-38 - CONTENT-PORTION
+  content-0-39 - CONTENT-PORTION
+  content-0-40 - CONTENT-PORTION
+  content-0-41 - CONTENT-PORTION
+  content-0-42 - CONTENT-PORTION
+  content-0-43 - CONTENT-PORTION
+  content-0-44 - CONTENT-PORTION
+  content-0-45 - CONTENT-PORTION
+  content-0-46 - CONTENT-PORTION
+  content-0-47 - CONTENT-PORTION
+  content-0-48 - CONTENT-PORTION
+  content-0-49 - CONTENT-PORTION
+  content-0-50 - CONTENT-PORTION
+  content-0-51 - CONTENT-PORTION
+  content-0-52 - CONTENT-PORTION
+  content-0-53 - CONTENT-PORTION
+  content-0-54 - CONTENT-PORTION
+  content-0-55 - CONTENT-PORTION
+  content-0-56 - CONTENT-PORTION
+  content-0-57 - CONTENT-PORTION
+  content-0-58 - CONTENT-PORTION
+  content-0-59 - CONTENT-PORTION
+  content-1-0 - CONTENT-PORTION
+  content-1-1 - CONTENT-PORTION
+  content-1-2 - CONTENT-PORTION
+  content-1-3 - CONTENT-PORTION
+  content-1-4 - CONTENT-PORTION
+  content-1-5 - CONTENT-PORTION
+  content-1-6 - CONTENT-PORTION
+  content-1-7 - CONTENT-PORTION
+  content-1-8 - CONTENT-PORTION
+  content-1-9 - CONTENT-PORTION
+  content-1-10 - CONTENT-PORTION
+  content-1-11 - CONTENT-PORTION
+  content-1-12 - CONTENT-PORTION
+  content-1-13 - CONTENT-PORTION
+  content-1-14 - CONTENT-PORTION
+  content-1-15 - CONTENT-PORTION
+  content-1-16 - CONTENT-PORTION
+  content-1-17 - CONTENT-PORTION
+  content-1-18 - CONTENT-PORTION
+  content-1-19 - CONTENT-PORTION
+  content-1-20 - CONTENT-PORTION
+  content-1-21 - CONTENT-PORTION
+  content-1-22 - CONTENT-PORTION
+  content-1-23 - CONTENT-PORTION
+  content-1-24 - CONTENT-PORTION
+  content-1-25 - CONTENT-PORTION
+  content-1-26 - CONTENT-PORTION
+  content-1-27 - CONTENT-PORTION
+  content-1-28 - CONTENT-PORTION
+  content-1-29 - CONTENT-PORTION
+  content-1-30 - CONTENT-PORTION
+  content-1-31 - CONTENT-PORTION
+  content-1-32 - CONTENT-PORTION
+  content-1-33 - CONTENT-PORTION
+  content-1-34 - CONTENT-PORTION
+  content-1-35 - CONTENT-PORTION
+  content-1-36 - CONTENT-PORTION
+  content-1-37 - CONTENT-PORTION
+  content-1-38 - CONTENT-PORTION
+  content-1-39 - CONTENT-PORTION
+  content-1-40 - CONTENT-PORTION
+  content-1-41 - CONTENT-PORTION
+  content-1-42 - CONTENT-PORTION
+  content-1-43 - CONTENT-PORTION
+  content-1-44 - CONTENT-PORTION
+  content-1-45 - CONTENT-PORTION
+  content-1-46 - CONTENT-PORTION
+  content-1-47 - CONTENT-PORTION
+  content-1-48 - CONTENT-PORTION
+  content-1-49 - CONTENT-PORTION
+  content-1-50 - CONTENT-PORTION
+  content-1-51 - CONTENT-PORTION
+  content-1-52 - CONTENT-PORTION
+  content-1-53 - CONTENT-PORTION
+  content-1-54 - CONTENT-PORTION
+  content-1-55 - CONTENT-PORTION
+  content-1-56 - CONTENT-PORTION
+  content-1-57 - CONTENT-PORTION
+  content-1-58 - CONTENT-PORTION
+  content-1-59 - CONTENT-PORTION
+  content-1-60 - CONTENT-PORTION
+  content-1-61 - CONTENT-PORTION
+  content-1-62 - CONTENT-PORTION
+  content-1-63 - CONTENT-PORTION
+  content-1-64 - CONTENT-PORTION
+  content-1-65 - CONTENT-PORTION
+  tray0 - TRAY
+  tray1 - TRAY
+  tray2 - TRAY
+  table0 - PLACE
+  table1 - PLACE
+  table2 - PLACE
+  table3 - PLACE
+  table4 - PLACE
+  sandw0 - SANDWICH
+  sandw1 - SANDWICH
+  sandw2 - SANDWICH
+  sandw3 - SANDWICH
+  sandw4 - SANDWICH
+  sandw5 - SANDWICH
+  sandw6 - SANDWICH
+)
+(:init
+  (at tray0 kitchen)
+  (at tray1 kitchen)
+  (at tray2 kitchen)
+  (at_kitchen_bread bread0)
+  (at_kitchen_bread bread1)
+  (at_kitchen_bread bread2)
+  (at_kitchen_bread bread3)
+  (at_kitchen_bread bread4)
+  (at_kitchen_bread bread5)
+  (at_kitchen_bread bread6)
+  (at_kitchen_content content-0-0)
+  (at_kitchen_content content-0-1)
+  (at_kitchen_content content-0-2)
+  (at_kitchen_content content-0-3)
+  (at_kitchen_content content-0-4)
+  (at_kitchen_content content-0-5)
+  (at_kitchen_content content-0-6)
+  (at_kitchen_content content-0-7)
+  (at_kitchen_content content-0-8)
+  (at_kitchen_content content-0-9)
+  (at_kitchen_content content-0-10)
+  (at_kitchen_content content-0-11)
+  (at_kitchen_content content-0-12)
+  (at_kitchen_content content-0-13)
+  (at_kitchen_content content-0-14)
+  (at_kitchen_content content-0-15)
+  (at_kitchen_content content-0-16)
+  (at_kitchen_content content-0-17)
+  (at_kitchen_content content-0-18)
+  (at_kitchen_content content-0-19)
+  (at_kitchen_content content-0-20)
+  (at_kitchen_content content-0-21)
+  (at_kitchen_content content-0-22)
+  (at_kitchen_content content-0-23)
+  (at_kitchen_content content-0-24)
+  (at_kitchen_content content-0-25)
+  (at_kitchen_content content-0-26)
+  (at_kitchen_content content-0-27)
+  (at_kitchen_content content-0-28)
+  (at_kitchen_content content-0-29)
+  (at_kitchen_content content-0-30)
+  (at_kitchen_content content-0-31)
+  (at_kitchen_content content-0-32)
+  (at_kitchen_content content-0-33)
+  (at_kitchen_content content-0-34)
+  (at_kitchen_content content-0-35)
+  (at_kitchen_content content-0-36)
+  (at_kitchen_content content-0-37)
+  (at_kitchen_content content-0-38)
+  (at_kitchen_content content-0-39)
+  (at_kitchen_content content-0-40)
+  (at_kitchen_content content-0-41)
+  (at_kitchen_content content-0-42)
+  (at_kitchen_content content-0-43)
+  (at_kitchen_content content-0-44)
+  (at_kitchen_content content-0-45)
+  (at_kitchen_content content-0-46)
+  (at_kitchen_content content-0-47)
+  (at_kitchen_content content-0-48)
+  (at_kitchen_content content-0-49)
+  (at_kitchen_content content-0-50)
+  (at_kitchen_content content-0-51)
+  (at_kitchen_content content-0-52)
+  (at_kitchen_content content-0-53)
+  (at_kitchen_content content-0-54)
+  (at_kitchen_content content-0-55)
+  (at_kitchen_content content-0-56)
+  (at_kitchen_content content-0-57)
+  (at_kitchen_content content-0-58)
+  (at_kitchen_content content-0-59)
+  (at_kitchen_content content-1-0)
+  (at_kitchen_content content-1-1)
+  (at_kitchen_content content-1-2)
+  (at_kitchen_content content-1-3)
+  (at_kitchen_content content-1-4)
+  (at_kitchen_content content-1-5)
+  (at_kitchen_content content-1-6)
+  (at_kitchen_content content-1-7)
+  (at_kitchen_content content-1-8)
+  (at_kitchen_content content-1-9)
+  (at_kitchen_content content-1-10)
+  (at_kitchen_content content-1-11)
+  (at_kitchen_content content-1-12)
+  (at_kitchen_content content-1-13)
+  (at_kitchen_content content-1-14)
+  (at_kitchen_content content-1-15)
+  (at_kitchen_content content-1-16)
+  (at_kitchen_content content-1-17)
+  (at_kitchen_content content-1-18)
+  (at_kitchen_content content-1-19)
+  (at_kitchen_content content-1-20)
+  (at_kitchen_content content-1-21)
+  (at_kitchen_content content-1-22)
+  (at_kitchen_content content-1-23)
+  (at_kitchen_content content-1-24)
+  (at_kitchen_content content-1-25)
+  (at_kitchen_content content-1-26)
+  (at_kitchen_content content-1-27)
+  (at_kitchen_content content-1-28)
+  (at_kitchen_content content-1-29)
+  (at_kitchen_content content-1-30)
+  (at_kitchen_content content-1-31)
+  (at_kitchen_content content-1-32)
+  (at_kitchen_content content-1-33)
+  (at_kitchen_content content-1-34)
+  (at_kitchen_content content-1-35)
+  (at_kitchen_content content-1-36)
+  (at_kitchen_content content-1-37)
+  (at_kitchen_content content-1-38)
+  (at_kitchen_content content-1-39)
+  (at_kitchen_content content-1-40)
+  (at_kitchen_content content-1-41)
+  (at_kitchen_content content-1-42)
+  (at_kitchen_content content-1-43)
+  (at_kitchen_content content-1-44)
+  (at_kitchen_content content-1-45)
+  (at_kitchen_content content-1-46)
+  (at_kitchen_content content-1-47)
+  (at_kitchen_content content-1-48)
+  (at_kitchen_content content-1-49)
+  (at_kitchen_content content-1-50)
+  (at_kitchen_content content-1-51)
+  (at_kitchen_content content-1-52)
+  (at_kitchen_content content-1-53)
+  (at_kitchen_content content-1-54)
+  (at_kitchen_content content-1-55)
+  (at_kitchen_content content-1-56)
+  (at_kitchen_content content-1-57)
+  (at_kitchen_content content-1-58)
+  (at_kitchen_content content-1-59)
+  (at_kitchen_content content-1-60)
+  (at_kitchen_content content-1-61)
+  (at_kitchen_content content-1-62)
+  (at_kitchen_content content-1-63)
+  (at_kitchen_content content-1-64)
+  (at_kitchen_content content-1-65)
+  (descr content-0-0 content-0)
+  (descr content-0-1 content-0)
+  (descr content-0-2 content-0)
+  (descr content-0-3 content-0)
+  (descr content-0-4 content-0)
+  (descr content-0-5 content-0)
+  (descr content-0-6 content-0)
+  (descr content-0-7 content-0)
+  (descr content-0-8 content-0)
+  (descr content-0-9 content-0)
+  (descr content-0-10 content-0)
+  (descr content-0-11 content-0)
+  (descr content-0-12 content-0)
+  (descr content-0-13 content-0)
+  (descr content-0-14 content-0)
+  (descr content-0-15 content-0)
+  (descr content-0-16 content-0)
+  (descr content-0-17 content-0)
+  (descr content-0-18 content-0)
+  (descr content-0-19 content-0)
+  (descr content-0-20 content-0)
+  (descr content-0-21 content-0)
+  (descr content-0-22 content-0)
+  (descr content-0-23 content-0)
+  (descr content-0-24 content-0)
+  (descr content-0-25 content-0)
+  (descr content-0-26 content-0)
+  (descr content-0-27 content-0)
+  (descr content-0-28 content-0)
+  (descr content-0-29 content-0)
+  (descr content-0-30 content-0)
+  (descr content-0-31 content-0)
+  (descr content-0-32 content-0)
+  (descr content-0-33 content-0)
+  (descr content-0-34 content-0)
+  (descr content-0-35 content-0)
+  (descr content-0-36 content-0)
+  (descr content-0-37 content-0)
+  (descr content-0-38 content-0)
+  (descr content-0-39 content-0)
+  (descr content-0-40 content-0)
+  (descr content-0-41 content-0)
+  (descr content-0-42 content-0)
+  (descr content-0-43 content-0)
+  (descr content-0-44 content-0)
+  (descr content-0-45 content-0)
+  (descr content-0-46 content-0)
+  (descr content-0-47 content-0)
+  (descr content-0-48 content-0)
+  (descr content-0-49 content-0)
+  (descr content-0-50 content-0)
+  (descr content-0-51 content-0)
+  (descr content-0-52 content-0)
+  (descr content-0-53 content-0)
+  (descr content-0-54 content-0)
+  (descr content-0-55 content-0)
+  (descr content-0-56 content-0)
+  (descr content-0-57 content-0)
+  (descr content-0-58 content-0)
+  (descr content-0-59 content-0)
+  (descr content-1-0 content-1)
+  (descr content-1-1 content-1)
+  (descr content-1-2 content-1)
+  (descr content-1-3 content-1)
+  (descr content-1-4 content-1)
+  (descr content-1-5 content-1)
+  (descr content-1-6 content-1)
+  (descr content-1-7 content-1)
+  (descr content-1-8 content-1)
+  (descr content-1-9 content-1)
+  (descr content-1-10 content-1)
+  (descr content-1-11 content-1)
+  (descr content-1-12 content-1)
+  (descr content-1-13 content-1)
+  (descr content-1-14 content-1)
+  (descr content-1-15 content-1)
+  (descr content-1-16 content-1)
+  (descr content-1-17 content-1)
+  (descr content-1-18 content-1)
+  (descr content-1-19 content-1)
+  (descr content-1-20 content-1)
+  (descr content-1-21 content-1)
+  (descr content-1-22 content-1)
+  (descr content-1-23 content-1)
+  (descr content-1-24 content-1)
+  (descr content-1-25 content-1)
+  (descr content-1-26 content-1)
+  (descr content-1-27 content-1)
+  (descr content-1-28 content-1)
+  (descr content-1-29 content-1)
+  (descr content-1-30 content-1)
+  (descr content-1-31 content-1)
+  (descr content-1-32 content-1)
+  (descr content-1-33 content-1)
+  (descr content-1-34 content-1)
+  (descr content-1-35 content-1)
+  (descr content-1-36 content-1)
+  (descr content-1-37 content-1)
+  (descr content-1-38 content-1)
+  (descr content-1-39 content-1)
+  (descr content-1-40 content-1)
+  (descr content-1-41 content-1)
+  (descr content-1-42 content-1)
+  (descr content-1-43 content-1)
+  (descr content-1-44 content-1)
+  (descr content-1-45 content-1)
+  (descr content-1-46 content-1)
+  (descr content-1-47 content-1)
+  (descr content-1-48 content-1)
+  (descr content-1-49 content-1)
+  (descr content-1-50 content-1)
+  (descr content-1-51 content-1)
+  (descr content-1-52 content-1)
+  (descr content-1-53 content-1)
+  (descr content-1-54 content-1)
+  (descr content-1-55 content-1)
+  (descr content-1-56 content-1)
+  (descr content-1-57 content-1)
+  (descr content-1-58 content-1)
+  (descr content-1-59 content-1)
+  (descr content-1-60 content-1)
+  (descr content-1-61 content-1)
+  (descr content-1-62 content-1)
+  (descr content-1-63 content-1)
+  (descr content-1-64 content-1)
+  (descr content-1-65 content-1)
+  (likes child4 content-1)
+  (likes child2 content-1)
+  (likes child6 content-1)
+  (likes child3 content-0)
+  (likes child1 content-0)
+  (likes child0 content-0)
+  (likes child5 content-0)
+  (likes child4 content-0)
+  (likes child2 content-0)
+  (likes child6 content-0)
+  (likes child3 content-1)
+  (likes child1 content-1)
+  (likes child0 content-1)
+  (likes child5 content-1)
+  (waiting child0 table0)
+  (waiting child1 table1)
+  (waiting child2 table2)
+  (waiting child3 table3)
+  (waiting child4 table4)
+  (waiting child5 table0)
+  (waiting child6 table1)
+  (notexist sandw0)
+  (notexist sandw1)
+  (notexist sandw2)
+  (notexist sandw3)
+  (notexist sandw4)
+  (notexist sandw5)
+  (notexist sandw6)
+)
+(:goal   (and (served child0)
+  (served child1)
+  (served child2)
+  (served child3)
+  (served child4)
+  (served child5)
+  (served child6)))
+)

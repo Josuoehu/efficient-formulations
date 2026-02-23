@@ -1,0 +1,66 @@
+(define (problem tpp)
+(:domain tpp-propositional)
+(:objects 
+  goods1 - GOODS
+  goods2 - GOODS
+  goods3 - GOODS
+  goods4 - GOODS
+  goods5 - GOODS
+  truck1 - TRUCK
+  truck2 - TRUCK
+  market1 - MARKET
+  market2 - MARKET
+  depot1 - DEPOT
+  level0 - LEVEL
+  level1 - LEVEL
+)
+(:init
+  (next level1 level0)
+  (ready-to-load goods1 market1 level0)
+  (ready-to-load goods1 market2 level0)
+  (ready-to-load goods2 market1 level0)
+  (ready-to-load goods2 market2 level0)
+  (ready-to-load goods3 market1 level0)
+  (ready-to-load goods3 market2 level0)
+  (ready-to-load goods4 market1 level0)
+  (ready-to-load goods4 market2 level0)
+  (ready-to-load goods5 market1 level0)
+  (ready-to-load goods5 market2 level0)
+  (stored goods1 level0)
+  (stored goods2 level0)
+  (stored goods3 level0)
+  (stored goods4 level0)
+  (stored goods5 level0)
+  (loaded goods1 truck1 level0)
+  (loaded goods1 truck2 level0)
+  (loaded goods2 truck1 level0)
+  (loaded goods2 truck2 level0)
+  (loaded goods3 truck1 level0)
+  (loaded goods3 truck2 level0)
+  (loaded goods4 truck1 level0)
+  (loaded goods4 truck2 level0)
+  (loaded goods5 truck1 level0)
+  (loaded goods5 truck2 level0)
+  (connected_market_market market1 market2)
+  (connected_market_market market2 market1)
+  (connected_depot_market depot1 market2)
+  (connected_market_depot market2 depot1)
+  (on-sale goods1 market1 level1)
+  (on-sale goods2 market1 level1)
+  (on-sale goods3 market1 level1)
+  (on-sale goods4 market1 level1)
+  (on-sale goods5 market1 level1)
+  (on-sale goods1 market2 level0)
+  (on-sale goods2 market2 level0)
+  (on-sale goods3 market2 level0)
+  (on-sale goods4 market2 level0)
+  (on-sale goods5 market2 level0)
+  (at_depot truck1 depot1)
+  (at_depot truck2 depot1)
+)
+(:goal   (and (stored goods1 level1)
+  (stored goods2 level1)
+  (stored goods3 level1)
+  (stored goods4 level1)
+  (stored goods5 level1)))
+)

@@ -1,0 +1,95 @@
+(define (problem tpp)
+(:domain tpp-propositional)
+(:objects 
+  goods1 - GOODS
+  goods2 - GOODS
+  goods3 - GOODS
+  goods4 - GOODS
+  goods5 - GOODS
+  goods6 - GOODS
+  goods7 - GOODS
+  goods8 - GOODS
+  truck1 - TRUCK
+  truck2 - TRUCK
+  market1 - MARKET
+  market2 - MARKET
+  depot1 - DEPOT
+  level0 - LEVEL
+  level1 - LEVEL
+  level2 - LEVEL
+)
+(:init
+  (next level1 level0)
+  (next level2 level1)
+  (ready-to-load goods1 market1 level0)
+  (ready-to-load goods1 market2 level0)
+  (ready-to-load goods2 market1 level0)
+  (ready-to-load goods2 market2 level0)
+  (ready-to-load goods3 market1 level0)
+  (ready-to-load goods3 market2 level0)
+  (ready-to-load goods4 market1 level0)
+  (ready-to-load goods4 market2 level0)
+  (ready-to-load goods5 market1 level0)
+  (ready-to-load goods5 market2 level0)
+  (ready-to-load goods6 market1 level0)
+  (ready-to-load goods6 market2 level0)
+  (ready-to-load goods7 market1 level0)
+  (ready-to-load goods7 market2 level0)
+  (ready-to-load goods8 market1 level0)
+  (ready-to-load goods8 market2 level0)
+  (stored goods1 level0)
+  (stored goods2 level0)
+  (stored goods3 level0)
+  (stored goods4 level0)
+  (stored goods5 level0)
+  (stored goods6 level0)
+  (stored goods7 level0)
+  (stored goods8 level0)
+  (loaded goods1 truck1 level0)
+  (loaded goods1 truck2 level0)
+  (loaded goods2 truck1 level0)
+  (loaded goods2 truck2 level0)
+  (loaded goods3 truck1 level0)
+  (loaded goods3 truck2 level0)
+  (loaded goods4 truck1 level0)
+  (loaded goods4 truck2 level0)
+  (loaded goods5 truck1 level0)
+  (loaded goods5 truck2 level0)
+  (loaded goods6 truck1 level0)
+  (loaded goods6 truck2 level0)
+  (loaded goods7 truck1 level0)
+  (loaded goods7 truck2 level0)
+  (loaded goods8 truck1 level0)
+  (loaded goods8 truck2 level0)
+  (connected_market_market market1 market2)
+  (connected_market_market market2 market1)
+  (connected_depot_market depot1 market2)
+  (connected_market_depot market2 depot1)
+  (on-sale goods1 market1 level1)
+  (on-sale goods2 market1 level2)
+  (on-sale goods3 market1 level1)
+  (on-sale goods4 market1 level2)
+  (on-sale goods5 market1 level2)
+  (on-sale goods6 market1 level2)
+  (on-sale goods7 market1 level2)
+  (on-sale goods8 market1 level2)
+  (on-sale goods1 market2 level0)
+  (on-sale goods2 market2 level0)
+  (on-sale goods3 market2 level1)
+  (on-sale goods4 market2 level0)
+  (on-sale goods5 market2 level0)
+  (on-sale goods6 market2 level0)
+  (on-sale goods7 market2 level0)
+  (on-sale goods8 market2 level0)
+  (at_depot truck1 depot1)
+  (at_depot truck2 depot1)
+)
+(:goal   (and (stored goods1 level1)
+  (stored goods2 level2)
+  (stored goods3 level1)
+  (stored goods4 level2)
+  (stored goods5 level2)
+  (stored goods6 level1)
+  (stored goods7 level2)
+  (stored goods8 level1)))
+)

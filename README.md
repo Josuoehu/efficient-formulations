@@ -1,123 +1,149 @@
 # efficient-formulations
 
-Quick guide to run `pddl2smt` and `pddl2sat`.
+Reference README for the current CLI behavior of:
+- `pddl2smt`
+- `pddl2sat`
+- `pddlalltime`
 
 ## Requirements
 
 - Java (JDK 17+ recommended)
-- Python 3 (only needed when using `-j`)
-- Z3 (only needed to solve SMT/CNF outside Java)
+- Python 3 (required when using `-j` modes that generate/read JSON)
+- Z3 (optional, for solving generated SMT files)
 
-Java dependencies used by the project:
-
+Java libraries used by this repository:
 - `lib/pddl4j-3.1.0.jar`
 - `lib/javax.json-1.1.4.jar`
 - `lib/javax.json-api-1.1.4.jar`
 
-## Compilation
+## Compile
 
 ```bash
-javac -cp 'lib/*' -d out src/*.java
+javac -cp 'lib/*:src' -d out src/pddl2smt.java src/pddl2sat.java src/pddlalltime.java
 ```
 
-## 1) pddl2smt
+## 1) `pddl2smt`
 
-Generates SMT-LIB (output is printed to `stdout`).
+Generates SMT-LIB to `stdout`.
 
-### Basic usage
+### Mandatory flags
+
+- `-o <domain.pddl>`
+- `-f <problem.pddl>`
+- `-t <steps>` where `<steps> >= 0`
+
+Base command:
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o <domain.pddl> -f <problem.pddl> -t <steps>
 ```
 
-Example:
+### JSON mode (`-j`)
 
-```bash
-java -cp 'out:lib/*' pddl2smt \
-  -o benchmarks/sock-and-shoes/domain.pddl \
-  -f benchmarks/sock-and-shoes/problems/problem.pddl \
-  -t 4 > /tmp/sock_t4.smt2
-```
+You can add:
+- `-j [json_file]` (optional file path, default `output.json`)
 
-### JSON usage (`-j`)
+When `-j` is used, exactly one profile is required:
+- `--mode-c` (equivalent to `--init --static-init --opfilter-dom-no-pv`)
+- `--mode-sc` (equivalent to `--init --static-init --inertia --inertia-eff-skip`)
 
-With `-j`, you must choose exactly **one** mode:
-
-- `--mode-c` (operator-filter profile)
-- `--mode-sc` (strict inertia profile)
+Valid commands:
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-c
 java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-sc
 ```
 
-Notes:
+Rules:
+- With `-j`, one and only one of `--mode-c` / `--mode-sc` is accepted.
+- Legacy JSON flags are rejected if `-j` is present.
+- If JSON flags are passed without `-j`, they are ignored with a warning.
+- If the JSON file does not exist, it is generated automatically.
 
-- If the JSON file does not exist, it is regenerated automatically.
-- Using `-j` without a mode (or with both modes) raises an error.
-- Legacy JSON flags in `pddl2smt` are no longer freely combinable.
-
-### Check satisfiability with Z3
+### Example (sock-and-shoes)
 
 ```bash
+java -cp 'out:lib/*' pddl2smt \
+  -o benchmarks/sock-and-shoes/domain.pddl \
+  -f benchmarks/sock-and-shoes/problems/problem.pddl \
+  -t 4 > /tmp/sock_t4.smt2
+
 z3 /tmp/sock_t4.smt2
 ```
 
-For `sock-and-shoes`:
+## 2) `pddl2sat`
 
-- `-t 3` -> `unsat`
-- `-t 4` -> `sat`
+Generates CNF (DIMACS) to `stdout`.
 
-## 2) pddl2sat
+### Planning mode
 
-Generates DIMACS CNF (output is printed to `stdout`).
-
-### Basic usage
+Mandatory flags:
+- `-d <domain.pddl>`
+- `-p <problem.pddl>`
+- `-s <steps>`
 
 ```bash
 java -cp 'out:lib/*' pddl2sat -d <domain.pddl> -p <problem.pddl> -s <steps>
 ```
 
-Example:
-
-```bash
-java -cp 'out:lib/*' pddl2sat \
-  -d benchmarks/sock-and-shoes/domain.pddl \
-  -p benchmarks/sock-and-shoes/problems/problem.pddl \
-  -s 4 > /tmp/sock_t4.cnf
-```
-
-### JSON usage (`-j`)
+### JSON mode with SAT encoding
 
 ```bash
 java -cp 'out:lib/*' pddl2sat -d <domain> -p <problem> -s <steps> -j [json]
 ```
 
-Current rules:
+Behavior and constraints:
+- `-j` implies internal `init + static` behavior.
+- `--init` and `--static` are no longer accepted explicitly.
+- `--inertia` is valid only without `-j`.
+- If `[json]` is omitted, default is `output.json`.
+- If JSON does not exist, it is generated automatically.
 
-- `-j` implicitly enables the behavior of `--init --static`.
-- `--init` and `--static` are **no longer accepted** as explicit CLI options.
-- `--inertia` is not allowed together with `-j`.
-
-### Reconstruct a plan from CNF + SAT model
+### Plan reconstruction mode
 
 ```bash
 java -cp 'out:lib/*' pddl2sat -f <formula.cnf> -m <model>
 ```
 
-## Complete examples (sock-and-shoes)
-
-SMT with 3 and 4 steps:
+### Help
 
 ```bash
+java -cp 'out:lib/*' pddl2sat --help
+```
+
+## 3) `pddlalltime`
+
+Quantified SMT variant. This tool is intentionally limited to `-q`.
+
+Mandatory flags:
+- `-o <domain.pddl>`
+- `-f <problem.pddl>`
+- `-q all|time`
+
+```bash
+java -cp 'out:lib/*' pddlalltime -o <domain.pddl> -f <problem.pddl> -q all
+java -cp 'out:lib/*' pddlalltime -o <domain.pddl> -f <problem.pddl> -q time
+```
+
+Current policy:
+- Only quantified mode is supported in `pddlalltime`.
+- Non-`-q` invocations print usage.
+
+## End-to-end quick checks
+
+```bash
+# pddl2smt
 java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 3 > /tmp/sock_t3.smt2
 java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 4 > /tmp/sock_t4.smt2
 z3 /tmp/sock_t3.smt2
 z3 /tmp/sock_t4.smt2
-```
 
-SAT (CNF):
-
-```bash
+# pddl2sat
 java -cp 'out:lib/*' pddl2sat -d benchmarks/sock-and-shoes/domain.pddl -p benchmarks/sock-and-shoes/problems/problem.pddl -s 4 > /tmp/sock_t4.cnf
+
+# pddlalltime
+java -cp 'out:lib/*' pddlalltime -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -q all > /tmp/pddlalltime_q_all.smt2
+java -cp 'out:lib/*' pddlalltime -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -q time > /tmp/pddlalltime_q_time.smt2
+z3 /tmp/pddlalltime_q_all.smt2
+z3 /tmp/pddlalltime_q_time.smt2
 ```

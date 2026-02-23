@@ -1,20 +1,20 @@
 # efficient-formulations
 
-Guia rapida para ejecutar `pddl2smt` y `pddl2sat`.
+Quick guide to run `pddl2smt` and `pddl2sat`.
 
-## Requisitos
+## Requirements
 
-- Java (JDK 17+ recomendado)
-- Python 3 (solo necesario cuando se usa `-j`)
-- Z3 (solo para resolver SMT/CNF fuera de Java)
+- Java (JDK 17+ recommended)
+- Python 3 (only needed when using `-j`)
+- Z3 (only needed to solve SMT/CNF outside Java)
 
-Dependencias Java usadas por el proyecto:
+Java dependencies used by the project:
 
 - `lib/pddl4j-3.1.0.jar`
 - `lib/javax.json-1.1.4.jar`
 - `lib/javax.json-api-1.1.4.jar`
 
-## Compilacion
+## Compilation
 
 ```bash
 javac -cp 'lib/*' -d out src/*.java
@@ -22,15 +22,15 @@ javac -cp 'lib/*' -d out src/*.java
 
 ## 1) pddl2smt
 
-Genera SMT-LIB (salida por `stdout`).
+Generates SMT-LIB (output is printed to `stdout`).
 
-### Uso base
+### Basic usage
 
 ```bash
-java -cp 'out:lib/*' pddl2smt -o <domain.pddl> -f <problem.pddl> -t <pasos>
+java -cp 'out:lib/*' pddl2smt -o <domain.pddl> -f <problem.pddl> -t <steps>
 ```
 
-Ejemplo:
+Example:
 
 ```bash
 java -cp 'out:lib/*' pddl2smt \
@@ -39,46 +39,46 @@ java -cp 'out:lib/*' pddl2smt \
   -t 4 > /tmp/sock_t4.smt2
 ```
 
-### Uso con JSON (`-j`)
+### JSON usage (`-j`)
 
-Con `-j` debes elegir exactamente **un** modo:
+With `-j`, you must choose exactly **one** mode:
 
-- `--mode-c` (perfil de filtrado por operadores)
-- `--mode-sc` (perfil con inercia estricta)
+- `--mode-c` (operator-filter profile)
+- `--mode-sc` (strict inertia profile)
 
 ```bash
-java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <pasos> -j [json] --mode-c
-java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <pasos> -j [json] --mode-sc
+java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-c
+java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-sc
 ```
 
-Notas:
+Notes:
 
-- Si no existe el JSON, se regenera automaticamente.
-- Con `-j` sin modo, o con ambos modos, da error.
-- Los flags JSON antiguos de `pddl2smt` ya no son combinables libremente.
+- If the JSON file does not exist, it is regenerated automatically.
+- Using `-j` without a mode (or with both modes) raises an error.
+- Legacy JSON flags in `pddl2smt` are no longer freely combinable.
 
-### Comprobar satisfacibilidad con Z3
+### Check satisfiability with Z3
 
 ```bash
 z3 /tmp/sock_t4.smt2
 ```
 
-En `sock-and-shoes`:
+For `sock-and-shoes`:
 
 - `-t 3` -> `unsat`
 - `-t 4` -> `sat`
 
 ## 2) pddl2sat
 
-Genera CNF DIMACS (salida por `stdout`).
+Generates DIMACS CNF (output is printed to `stdout`).
 
-### Uso base
+### Basic usage
 
 ```bash
-java -cp 'out:lib/*' pddl2sat -d <domain.pddl> -p <problem.pddl> -s <pasos>
+java -cp 'out:lib/*' pddl2sat -d <domain.pddl> -p <problem.pddl> -s <steps>
 ```
 
-Ejemplo:
+Example:
 
 ```bash
 java -cp 'out:lib/*' pddl2sat \
@@ -87,27 +87,27 @@ java -cp 'out:lib/*' pddl2sat \
   -s 4 > /tmp/sock_t4.cnf
 ```
 
-### Uso con JSON (`-j`)
+### JSON usage (`-j`)
 
 ```bash
-java -cp 'out:lib/*' pddl2sat -d <domain> -p <problem> -s <pasos> -j [json]
+java -cp 'out:lib/*' pddl2sat -d <domain> -p <problem> -s <steps> -j [json]
 ```
 
-Reglas actuales:
+Current rules:
 
-- `-j` implica internamente el comportamiento de `--init --static`.
-- `--init` y `--static` **ya no se aceptan** de forma explicita.
-- `--inertia` no se permite junto con `-j`.
+- `-j` implicitly enables the behavior of `--init --static`.
+- `--init` and `--static` are **no longer accepted** as explicit CLI options.
+- `--inertia` is not allowed together with `-j`.
 
-### Reconstruir plan desde CNF + modelo SAT
+### Reconstruct a plan from CNF + SAT model
 
 ```bash
 java -cp 'out:lib/*' pddl2sat -f <formula.cnf> -m <model>
 ```
 
-## Ejemplos completos (sock-and-shoes)
+## Complete examples (sock-and-shoes)
 
-SMT con 3 y 4 pasos:
+SMT with 3 and 4 steps:
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o benchmarks/sock-and-shoes/domain.pddl -f benchmarks/sock-and-shoes/problems/problem.pddl -t 3 > /tmp/sock_t3.smt2
@@ -121,4 +121,3 @@ SAT (CNF):
 ```bash
 java -cp 'out:lib/*' pddl2sat -d benchmarks/sock-and-shoes/domain.pddl -p benchmarks/sock-and-shoes/problems/problem.pddl -s 4 > /tmp/sock_t4.cnf
 ```
-

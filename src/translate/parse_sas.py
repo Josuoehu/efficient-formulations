@@ -84,7 +84,7 @@ def parse_sas(stream):
 			in_static = True
 			static_atoms = []
 			continue
-		if line.startswith('end_variable'):
+		if line.startswith('end_static'):
 			in_static = False
 			continue
 		if in_static:

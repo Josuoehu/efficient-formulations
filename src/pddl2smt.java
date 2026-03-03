@@ -23,16 +23,65 @@ public class pddl2smt {
   private static boolean useOperatorFilterDomNoPv = false;
   private static Map<String, List<List<Integer>>> jsonOperatorTuples = Collections.emptyMap();
 
+  private static void validateAllowedFlagsWithJson(List<String> argsList) {
+    Set<String> allowedWithJson = new HashSet<>(Arrays.asList(
+        "-o", "-f", "-t", "-j", "--mode-c", "--mode-sc", "--mode-mix"
+    ));
+    for (int i = 0; i < argsList.size(); i++) {
+      String token = argsList.get(i);
+      if (!token.startsWith("-")) {
+        continue;
+      }
+      if (!allowedWithJson.contains(token)) {
+        throw new IllegalArgumentException(
+            "Error: con -j no se acepta " + token + ". Usa solo --mode-c, --mode-sc o --mode-mix."
+        );
+      }
+      if (token.equals("-o") || token.equals("-f") || token.equals("-t")) {
+        if (i + 1 >= argsList.size() || argsList.get(i + 1).startsWith("-")) {
+          throw new IllegalArgumentException("Error: falta valor para " + token + ".");
+        }
+        i++;
+      } else if (token.equals("-j")) {
+        if (i + 1 < argsList.size() && !argsList.get(i + 1).startsWith("-")) {
+          i++;
+        }
+      }
+    }
+  }
+
+  private static boolean isJsonOnlyFlagWithoutJ(String token) {
+    return token.equals("--mode-c")
+        || token.equals("--mode-sc")
+        || token.equals("--mode-mix")
+        || token.startsWith("--j-")
+        || token.equals("-u")
+        || token.startsWith("--static")
+        || token.startsWith("--inertia")
+        || token.equals("--init")
+        || token.equals("--goal")
+        || token.startsWith("--frame-prec-opt")
+        || token.startsWith("--opfilter");
+  }
+
+  private static boolean containsJsonFlagsWithoutJ(List<String> argsList) {
+    for (String token : argsList) {
+      if (isJsonOnlyFlagWithoutJ(token)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static void main(String[] args) throws Exception {
     boolean useJsonFrameAxioms = false;
     boolean inertiaAtoms = false;
     boolean useInitAtoms = false;
     boolean useGoalAtoms = false;
     boolean useFramePrecOpt = false;
-    boolean useInertiaEffSkip = false;
-    boolean useInertiaEffExpl = false;
     boolean useStaticAtoms = false;
     boolean useStaticInit = false;
+    boolean useOpFilterDom = false;
     boolean useOpFilterDomNoPv = false;
     String jsonPath = "output.json";
 
@@ -48,31 +97,22 @@ public class pddl2smt {
             jsonPath = argsList.get(jIndex + 1);
         }
 
-        // 3. Solo existen dos perfiles válidos tras -j.
+        // 3. Solo existe un perfil válido tras -j.
         boolean hasProfileOpfilter = argsList.contains("--mode-c");
         boolean hasProfileInertia = argsList.contains("--mode-sc");
+        boolean hasProfileMix = argsList.contains("--mode-mix");
+        int selectedProfiles = (hasProfileOpfilter ? 1 : 0)
+                             + (hasProfileInertia ? 1 : 0)
+                             + (hasProfileMix ? 1 : 0);
 
-        if (hasProfileOpfilter == hasProfileInertia) {
+        if (selectedProfiles != 1) {
             throw new IllegalArgumentException(
-                "Error: con -j debes indicar exactamente un perfil: --mode-c o --mode-sc."
+                "Error: con -j debes indicar exactamente un perfil: --mode-c, --mode-sc o --mode-mix."
             );
         }
 
-        // No se aceptan flags JSON legacy fuera de los dos perfiles.
-        String[] legacyJsonFlags = new String[] {
-            "--j-mode-opfilter", "--j-mode-inertia",
-            "-u", "--static", "--static-init", "--inertia", "--init", "--goal",
-            "--frame-prec-opt", "--inertia-eff-skip", "--inertia-eff-expl",
-            "--opfilter", "--opfilter-dom", "--opfilter-dom-no-pv"
-        };
-        for (String f : legacyJsonFlags) {
-            if (argsList.contains(f)) {
-                throw new IllegalArgumentException(
-                    "Error: con -j ya no se acepta " + f +
-                    ". Usa solo --mode-c o --mode-sc."
-                );
-            }
-        }
+        // Con -j solo se aceptan los flags de entrada estándar y un perfil.
+        validateAllowedFlagsWithJson(argsList);
 
         // Perfil 1: equivale a -j --init --static-init --opfilter-dom-no-pv
         if (hasProfileOpfilter) {
@@ -81,22 +121,23 @@ public class pddl2smt {
             useOpFilterDomNoPv = true;
         }
 
-        // Perfil 2: equivale a -j --init --static-init --inertia --inertia-eff-skip
+        // Perfil 2: equivale a -j --init --static-init --inertia
         if (hasProfileInertia) {
             useInitAtoms = true;
             useStaticInit = true;
             inertiaAtoms = true;
-            useInertiaEffSkip = true;
+        }
+
+        // Perfil 3: equivale a -j --init --static-init --opfilter-dom --inertia
+        if (hasProfileMix) {
+            useInitAtoms = true;
+            useStaticInit = true;
+            useOpFilterDom = true;
+            inertiaAtoms = true;
         }
     } 
     // Opcional: Avisar si intentan usar flags JSON sin -j
-    else if (argsList.contains("--mode-c") || argsList.contains("--mode-sc")
-             || argsList.contains("--j-mode-opfilter") || argsList.contains("--j-mode-inertia")
-             || argsList.contains("-u") || argsList.contains("--inertia") || argsList.contains("--static")
-             || argsList.contains("--static-init") || argsList.contains("--init") || argsList.contains("--goal")
-             || argsList.contains("--frame-prec-opt") || argsList.contains("--inertia-eff-skip")
-             || argsList.contains("--inertia-eff-expl") || argsList.contains("--opfilter")
-             || argsList.contains("--opfilter-dom") || argsList.contains("--opfilter-dom-no-pv")) {
+    else if (containsJsonFlagsWithoutJ(argsList)) {
         System.out.println("Advertencia: los flags JSON se ignorarán porque falta el flag -j.");
     }    
     useStaticPredicates = useStaticAtoms;
@@ -105,15 +146,8 @@ public class pddl2smt {
         useStaticFrameOnly = false;
     }
     useOperatorFilter = false;
-    useOperatorFilterDom = false;
+    useOperatorFilterDom = useOpFilterDom;
     useOperatorFilterDomNoPv = useOpFilterDomNoPv;
-
-    if (useInertiaEffSkip && useInertiaEffExpl) {
-        throw new IllegalArgumentException("Error: --inertia-eff-skip y --inertia-eff-expl son excluyentes.");
-    }
-    if ((useInertiaEffSkip || useInertiaEffExpl) && !inertiaAtoms) {
-        throw new IllegalArgumentException("Error: --inertia-eff-skip y --inertia-eff-expl requieren --inertia.");
-    }
 
     // Standard PDDL args are the first 6: -o D -f P -t N
     if (args.length >= 6 && args[0].equals("-o") && args[2].equals("-f")) {
@@ -140,7 +174,7 @@ public class pddl2smt {
             throw new IllegalArgumentException("Error: -t debe ser un entero no negativo.");
           }
           printPreamble();
-          translate(d, p, tTime, useJsonFrameAxioms, jsonPath, inertiaAtoms, useInitAtoms, useGoalAtoms, useFramePrecOpt, useInertiaEffSkip, useInertiaEffExpl, useOpFilterDomNoPv);
+          translate(d, p, tTime, useJsonFrameAxioms, jsonPath, inertiaAtoms, useInitAtoms, useGoalAtoms, useFramePrecOpt, useOpFilterDomNoPv);
         } else {
           printHelp();
         }
@@ -168,8 +202,9 @@ public class pddl2smt {
                        + "	number of time steps (>= 0)\n");
     System.out.println("Optional (only with -j):");
     System.out.println("  --mode-c                    profile: --init --static-init --opfilter-dom-no-pv");
-    System.out.println("  --mode-sc                   profile: --init --static-init --inertia --inertia-eff-skip");
-    System.out.println("  (exactly one of the two profiles is required when using -j)\n");
+    System.out.println("  --mode-sc                   profile: --init --static-init --inertia");
+    System.out.println("  --mode-mix                  profile: --init --static-init --opfilter-dom --inertia");
+    System.out.println("  (exactly one of the three profiles is required when using -j)\n");
   }
 
   /// @post Outputs the fixed preamble.
@@ -193,7 +228,9 @@ public class pddl2smt {
   /// by \p d and \p p using a fixed time horizon \p pTime.
   private static void translate(Domain pDomain, Problem pProblem,
                                 int pTime,
-                                boolean useJson, String jsonPath, boolean inertiaAtoms, boolean useInitAtoms, boolean useGoalAtoms, boolean useFramePrecOpt, boolean useInertiaEffSkip, boolean useInertiaEffExpl, boolean useOpFilterDomNoPv) throws Exception {
+                                boolean useJson, String jsonPath, boolean inertiaAtoms, boolean useInitAtoms,
+                                boolean useGoalAtoms, boolean useFramePrecOpt,
+                                boolean useOpFilterDomNoPv) throws Exception {
     Map<String, List<String>> dtypes = dataTypes(pDomain, pProblem);
     Hashtable<String, Object> equivalences;
     Map<String, List<String>> subtypes = baseSubtypes(pDomain, dtypes.keySet());
@@ -239,7 +276,7 @@ public class pddl2smt {
     }
     // CAMBIO: A partir de aquí tengo que generar los asserts correspondientes
     printTransitionFunction(pDomain, Collections.emptyMap(), modifiedLitsQuants, dtime,
-                            dtypes, constFunc, pTime, equivalences, useJson, jsonPath, inertiaAtoms, pProblem, useInitAtoms, useGoalAtoms, useFramePrecOpt, useInertiaEffSkip, useInertiaEffExpl);
+                            dtypes, constFunc, pTime, equivalences, useJson, jsonPath, inertiaAtoms, pProblem, useInitAtoms, useGoalAtoms, useFramePrecOpt);
     
     printInitialState(pDomain, pProblem, dtypes, dtime, equivalences);
     printGoal(pProblem, dtime, pTime, equivalences);
@@ -818,7 +855,7 @@ public class pddl2smt {
           Map<String, Map<ComparableExp, List<Op>>> modifiedLitsQuants,
           Set<String> dtime, Map<String, List<String>> dtypes,
           Map<String, Integer> constFunc, int pTime,
-          Map<String, Object> pEquivalences, boolean useJson, String jsonPath, boolean inertiaAtoms, Problem pProblem, boolean useInitAtoms, boolean useGoalAtoms, boolean useFramePrecOpt, boolean useInertiaEffSkip, boolean useInertiaEffExpl) throws Exception {
+          Map<String, Object> pEquivalences, boolean useJson, String jsonPath, boolean inertiaAtoms, Problem pProblem, boolean useInitAtoms, boolean useGoalAtoms, boolean useFramePrecOpt) throws Exception {
         System.out.println(";; Transition function");
         // CAMBMIO: Eliminar el _time
         System.out.println("(define-fun trans () Bool");
@@ -845,7 +882,7 @@ public class pddl2smt {
                 initAtoms.addAll(precAtoms);
               }
             }
-            printFrameAxiomsFromJSON(jsonPath, pTime, pEquivalences, modifiedLitsQuants, d, dtypes, dtime, inertiaAtoms, initAtoms, useInertiaEffSkip, useInertiaEffExpl);
+            printFrameAxiomsFromJSON(jsonPath, pTime, pEquivalences, modifiedLitsQuants, d, dtypes, dtime, inertiaAtoms, initAtoms);
         } else {
             printFrameAxiomsNoQuant(prefix, d, modifiedLitsQuants, pTime,
                                 pEquivalences,
@@ -4210,7 +4247,7 @@ action(o2, "t0", ""));
     }
     return namenew;
   }
-private static void printFrameAxiomsFromJSON(String jsonPath, int pTime, Map<String, Object> equivalences, Map<String, Map<ComparableExp, List<Op>>> modifiedLitsQuants, Domain d, Map<String, List<String>> dtypes, Set<String> dtime, boolean inertiaAtoms, Set<String> initAtoms, boolean useInertiaEffSkip, boolean useInertiaEffExpl) throws Exception {
+private static void printFrameAxiomsFromJSON(String jsonPath, int pTime, Map<String, Object> equivalences, Map<String, Map<ComparableExp, List<Op>>> modifiedLitsQuants, Domain d, Map<String, List<String>> dtypes, Set<String> dtime, boolean inertiaAtoms, Set<String> initAtoms) throws Exception {
     System.out.println(";; Frame Axioms (Explanation style) from Strict JSON");
     
     // 1. Read JSON and build Known Atoms Set using NAMES for robust matching
@@ -4239,7 +4276,7 @@ private static void printFrameAxiomsFromJSON(String jsonPath, int pTime, Map<Str
             knownAtoms.add(sb.toString());
         }
     }
-    Set<String> effectAtomsFromJsonOps = (useInertiaEffSkip || useInertiaEffExpl)
+    Set<String> effectAtomsFromJsonOps = inertiaAtoms
         ? collectEffectAtomsFromJsonOperators(jsonPath, d)
         : Collections.emptySet();
 
@@ -4302,48 +4339,28 @@ private static void printFrameAxiomsFromJSON(String jsonPath, int pTime, Map<Str
                 printExplanatoryAxioms(predicate, argsList, argsNamesList, pTime, equivalences, adders, deleters);
             } else {
                 boolean inJsonEffects = effectAtomsFromJsonOps.contains(atomKey);
-                // NOT in JSON: Strict Inertia Axiom (P_t+1 = P_t)
+                // NOT in JSON: strict inertia from the initial truth value.
                 // This prevents "miracles" for atoms that SAS+ pruned.
                 if (inertiaAtoms){
-                    if (inJsonEffects && useInertiaEffExpl) {
-                        Map<ComparableExp, List<Op>> positiveReasons = modifiedLitsQuants.get(predicate);
-                        Map<ComparableExp, List<Op>> negativeReasons = modifiedLitsQuants.get("not_" + predicate);
-
-                        List<Map.Entry<ComparableExp, List<Op>>> adders = new ArrayList<>();
-                        List<Map.Entry<ComparableExp, List<Op>>> deleters = new ArrayList<>();
-                        if (positiveReasons != null) adders.addAll(positiveReasons.entrySet());
-                        if (negativeReasons != null) deleters.addAll(negativeReasons.entrySet());
-                        printExplanatoryAxioms(predicate, argsList, argsNamesList, pTime, equivalences, adders, deleters);
+                    if (inJsonEffects) {
                         continue;
                     }
-                    if (inJsonEffects && useInertiaEffSkip) {
-                        continue;
-                    }
-                    if (useInertiaEffSkip) {
-                        // With eff-skip mode, rigid atoms are fixed from the initial truth value
-                        // (init + closed world), instead of chaining equalities across time.
-                        boolean initTrue = initAtoms != null &&
-                            (initAtoms.contains(atomKey) || initAtoms.contains(atomKeyJsonBase));
-                        for (int t = 1; t <= pTime; t++) {
-                            if (initTrue) {
-                                System.out.print("          ");
-                                printAtomSimple(predicate, argsList, t, !argsList.isEmpty());
-                                System.out.println();
-                            } else {
-                                System.out.print("          (not ");
-                                printAtomSimple(predicate, argsList, t, !argsList.isEmpty());
-                                System.out.println(")");
-                            }
+                    // Rigid atoms are fixed from the initial truth value
+                    // (init + closed world), instead of chaining equalities across time.
+                    boolean initTrue = initAtoms != null &&
+                        (initAtoms.contains(atomKey) || initAtoms.contains(atomKeyJsonBase));
+                    for (int t = 1; t <= pTime; t++) {
+                        if (initTrue) {
+                            System.out.print("          ");
+                            printAtomSimple(predicate, argsList, t, !argsList.isEmpty());
+                            System.out.println();
+                        } else {
+                            System.out.print("          (not ");
+                            printAtomSimple(predicate, argsList, t, !argsList.isEmpty());
+                            System.out.println(")");
                         }
-                        continue;
                     }
-                    for (int t = 0; t < pTime; t++) {
-                        System.out.print("          (= ");
-                        printAtomSimple(predicate, argsList, t + 1, !argsList.isEmpty());
-                        System.out.print(" ");
-                        printAtomSimple(predicate, argsList, t, !argsList.isEmpty());
-                        System.out.println(")");
-                    }
+                    continue;
                 }
             }
         }

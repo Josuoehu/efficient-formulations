@@ -1,2 +1,7 @@
 # Ignore the .class files.
 out/
+test/
+solve_until_sat.sh
+.idea/
+*.iml
+*.json

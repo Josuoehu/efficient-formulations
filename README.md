@@ -44,14 +44,16 @@ Optional:
 When `-j` is present, exactly one mode must be selected:
 - `--mode-c`  SMT-FD-C
 - `--mode-sc`  SMT-FD-SC
+- `--mode-mix`  allowed-operators + filtered possible values + SC-style inertia (Under developement)
 
 ```bash
 java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-c
 java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-sc
+java -cp 'out:lib/*' pddl2smt -o <domain> -f <problem> -t <steps> -j [json] --mode-mix
 ```
 
 Rules:
-- With `-j`, one and only one of `--mode-c` / `--mode-sc` is accepted.
+- With `-j`, one and only one of `--mode-c` / `--mode-sc` / `--mode-mix` is accepted.
 - Legacy JSON flags are rejected when `-j` is used.
 - JSON flags without `-j` are ignored with a warning.
 - If the JSON file does not exist, it is generated automatically.
